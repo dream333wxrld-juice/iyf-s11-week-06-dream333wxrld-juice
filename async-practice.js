@@ -204,4 +204,95 @@ async function fetchAllUsers() {
     console.log("All 3 users fetched simultaneously:", users);
 }
 
-fetchAllUsers();    
+fetchAllUsers();  
+
+// Task 11.4: Async/Await
+
+// Exercise 1: Converting to Async/Await
+
+// Promise chain version:
+function getDataWithPromises() {
+    return getUserDataPromise(1)
+        .then(user => getUserPostsPromise(user.id))
+        .then(posts => getPostCommentsPromise(posts[0].id))
+        .then(comments => comments);
+}
+
+// Async/await version (much cleaner!):
+async function getDataWithAsync() {
+    const user = await getUserDataPromise(1);
+    const posts = await getUserPostsPromise(user.id);
+    const comments = await getPostCommentsPromise(posts[0].id);
+    return comments;
+}
+
+// Using it
+getDataWithAsync().then(comments => console.log("Async/await result:", comments));
+
+// Exercise 2: Error Handling with Try/Catch
+async function fetchUserData(userId) {
+    try {
+        const user = await getUserDataPromise(userId);
+        const posts = await getUserPostsPromise(user.id);
+        return { user, posts };
+    } catch (error) {
+        console.error("Failed to fetch:", error);
+        throw error;
+    }
+}
+
+fetchUserData(1)
+    .then(data => console.log("Fetched data:", data))
+    .catch(error => console.error("Caught error:", error));
+
+// Test error case
+fetchUserData(-1)
+    .then(data => console.log("Fetched data:", data))
+    .catch(error => console.error("Caught error for invalid ID:", error));
+
+// Exercise 3: Parallel with Async/Await
+async function getAllUsersSequential() {
+    console.log("--- Sequential (slow) ---");
+    const startTime = Date.now();
+
+    const user1 = await getUserDataPromise(1);
+    const user2 = await getUserDataPromise(2);
+    const user3 = await getUserDataPromise(3);
+
+    console.log(`Sequential time: ${Date.now() - startTime}ms`);
+    return [user1, user2, user3];
+}
+
+async function getAllUsersParallel() {
+    console.log("--- Parallel (fast) ---");
+    const startTime = Date.now();
+
+    const [u1, u2, u3] = await Promise.all([
+        getUserDataPromise(1),
+        getUserDataPromise(2),
+        getUserDataPromise(3)
+    ]);
+
+    console.log(`Parallel time: ${Date.now() - startTime}ms`);
+    return [u1, u2, u3];
+}
+
+getAllUsersSequential().then(users => console.log("Sequential users:", users));
+getAllUsersParallel().then(users => console.log("Parallel users:", users));
+
+// Build: Rewrite callback hell using async/await
+async function getCommentsAsync() {
+    try {
+        const user = await getUserDataPromise(1);
+        console.log("User (async):", user);
+        const posts = await getUserPostsPromise(user.id);
+        console.log("Posts (async):", posts);
+        const comments = await getPostCommentsPromise(posts[0].id);
+        console.log("Comments (async):", comments);
+        return comments;
+    } catch (error) {
+        console.error("Error in async chain:", error);
+    }
+}
+
+getCommentsAsync();

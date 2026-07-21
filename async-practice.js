@@ -152,3 +152,56 @@ function getPostCommentsPromise(postId) {
 getUserDataPromise(1)
     .then(user => console.log("Promise version - User:", user))
     .catch(error => console.error(error));
+
+// Task 11.3: Promise Chaining
+
+// Exercise 1: Chain Promises
+getUserDataPromise(1)
+    .then(user => {
+        console.log("User:", user);
+        return getUserPostsPromise(user.id);
+    })
+    .then(posts => {
+        console.log("Posts:", posts);
+        return getPostCommentsPromise(posts[0].id);
+    })
+    .then(comments => {
+        console.log("Comments:", comments);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+
+// Exercise 2: Promise.all
+const promise1 = getUserDataPromise(1);
+const promise2 = getUserDataPromise(2);
+const promise3 = getUserDataPromise(3);
+
+Promise.all([promise1, promise2, promise3])
+    .then(results => {
+        console.log("All users:", results);
+    })
+    .catch(error => {
+        console.error("One failed:", error);
+    });
+
+// Exercise 3: Promise.race
+const fast = new Promise(resolve => setTimeout(() => resolve("Fast!"), 100));
+const slow = new Promise(resolve => setTimeout(() => resolve("Slow!"), 500));
+
+Promise.race([fast, slow])
+    .then(result => {
+        console.log("Winner:", result);
+    });
+
+// Build: Fetch data for 3 users simultaneously and display them all at once
+async function fetchAllUsers() {
+    const users = await Promise.all([
+        getUserDataPromise(1),
+        getUserDataPromise(2),
+        getUserDataPromise(3)
+    ]);
+    console.log("All 3 users fetched simultaneously:", users);
+}
+
+fetchAllUsers();    

@@ -72,6 +72,26 @@
             margin-bottom: 6px;
             font-size: 0.9rem;
         }
+
+        .controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.controls input,
+.controls select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.controls input {
+    flex: 1;
+    min-width: 200px;
+}
     </style>
 </head>
 <body>
@@ -81,6 +101,18 @@
         <div id="error" class="hidden"></div>
         <div id="users-container"></div>
     </div>
+
+    <div class="controls">
+    <input type="text" id="search" placeholder="Search by name or email...">
+    <select id="sort">
+        <option value="none">Sort by...</option>
+        <option value="az">Name (A-Z)</option>
+        <option value="za">Name (Z-A)</option>
+    </select>
+    <select id="city-filter">
+        <option value="all">All Cities</option>
+    </select>
+</div>
 
     <script src="user-directory.js"></script>
 </body>
